@@ -5,6 +5,7 @@ from sklearn.metrics import accuracy_score,classification_report
 from collections import Counter
 import random
 
+
 def read_conll(filename):
     words, labels = [], []
     with open(filename, 'rb') as f:
@@ -15,11 +16,13 @@ def read_conll(filename):
                 labels.append(tokens[3])
     return words,labels
   
+    
  def shuffle_dependent_lists(l1,l2):
     tmp = list(zip(l1,l2))
     random.Random(123).shuffle(tmp)
     return zip(*tmp)
   
+    
 if __name__ == "__main__":
   X_train, Y_train = read_conll("./Data/train.txt")
   X_test, Y_test = read_conll("./Data/test.txt")
