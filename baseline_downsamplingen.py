@@ -60,8 +60,6 @@ def main():
     X_test = X_test_nl
     Y_train = Y_train_nl + Y_train_en
     Y_test = Y_test_nl
-    X_train, Y_train = shuffle_dependent_lists(X_train, Y_train)
-    X_test, Y_test = shuffle_dependent_lists(X_test, Y_test)
 
 
     svm = train_svm(X_train, Y_train)
