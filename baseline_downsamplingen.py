@@ -15,7 +15,7 @@ def read_conll(filename):
         for line in f.readlines():
             if not line.startswith(b"#") and line.strip():
                 tokens = line.strip().split()
-                words.append(tokens[0]) #can add some other features
+                words.append(tokens[0])
                 # lemma.append(tokens[2])
                 # role.append(token[6])
                 labels.append(tokens[3])
@@ -42,14 +42,14 @@ def main():
     X_test_nl, Y_test_nl = read_conll("/content/drive/My Drive/data/nltest.txt")
     X_train_en, Y_train_en = read_conll("/content/drive/My Drive/data/entrain.txt")
     X_test_en, Y_test_en = read_conll("/content/drive/My Drive/data/entest.txt")    
-    # X_train = X_train_nl + X_train_en
-    # Y_train = Y_train_nl + Y_train_en
+    
+    # downsampling English data
     list_len = len(X_train_nl) - 1
     X_train_en = X_train_en[:list_len]
     Y_train_en = Y_train_en[:list_len]
     X_train_nl = X_train_nl[:list_len]
     Y_train_nl = Y_train_nl[:list_len]
-    # downsampling English data
+    
     X_train = X_train_nl + X_train_en
     X_test = X_test_nl
     Y_train = Y_train_nl + Y_train_en
