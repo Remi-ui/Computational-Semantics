@@ -16,7 +16,7 @@ def read_conll(filename):
         for line in f.readlines():
             if not line.startswith(b"#") and line.strip():
                 tokens = line.strip().split()
-                words.append(tokens[0]) #can add some other features
+                words.append(tokens[0]) 
                 labels.append(tokens[3])
     return words,labels
   
