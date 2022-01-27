@@ -45,17 +45,17 @@ def main():
     
 
     svm1 = train_svm(X_train_e[:len(X_train_n)], Y_train_e[:len(X_train_n)])
-    Y_pred_e1 = svm1.predict(X_test_e)
+    Y_pred_e = svm1.predict(X_test_e)
     
     svm2 = train_svm(X_train_n, Y_train_n)
-    Y_pred_n1 = svm1.predict(X_test_n)
+    Y_pred_n = svm2.predict(X_test_n)
   
     
     
-    print(f'accuracy SVM_en:{accuracy_score(Y_test_e, Y_pred_e1):.2f}')
-    print("F1_score SVM_en:",f1_score(Y_test_e, Y_pred_e1,average = 'macro'))
-    print(f'accuracy SVM_nl:{accuracy_score(Y_test_n, Y_pred_n1):.2f}')
-    print("F1_score SVM_nl:",f1_score(Y_test_n, Y_pred_n1,average = 'macro'))
+    print(f'accuracy SVM_en:{accuracy_score(Y_test_e, Y_pred_e):.2f}')
+    print("F1_score SVM_en:",f1_score(Y_test_e, Y_pred_e,average = 'macro'))
+    print(f'accuracy SVM_nl:{accuracy_score(Y_test_n, Y_pred_n):.2f}')
+    print("F1_score SVM_nl:",f1_score(Y_test_n, Y_pred_n,average = 'macro'))
 
 
   
