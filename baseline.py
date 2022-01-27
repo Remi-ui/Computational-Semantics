@@ -27,11 +27,11 @@ def shuffle_dependent_lists(l1,l2):
     random.Random(123).shuffle(tmp)
     return zip(*tmp)
   
-def train_naive_bayes(X_train, Y_train):
+def train_svm(X_train, Y_train):
     vec = TfidfVectorizer()
-    naive_classifier = Pipeline([('vec', vec), ('cls', MultinomialNB())])
-    naive_classifier = naive_classifier.fit(X_train, Y_train)
-    return naive_classifier
+    svm_classifier = Pipeline([('vec', vec), ('svc', LinearSVC())])
+    svm_classifier = svm_classifier.fit(X_train, Y_train)
+    return svm_classifier
   
   
 def main():
