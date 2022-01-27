@@ -6,6 +6,7 @@ from sklearn.svm import LinearSVC
 import random
 
 def read_conll(filename):
+    '''Read data files to extract features and labels.'''
     features, labels = [], []
     with open(filename, 'rb') as f:
         for line in f.readlines():
@@ -27,6 +28,7 @@ def shuffle_dependent_lists(l1,l2):
     return zip(*tmp)
   
 def train_svm(X_train, Y_train):
+    '''Train a Support Vector Machine with an rbf kernel on the provided train data with Tfidf vectors.'''
     vec = TfidfVectorizer()
     svm_classifier = Pipeline([('vec', vec), ('svc', LinearSVC())])
     svm_classifier = svm_classifier.fit(X_train, Y_train)
@@ -43,7 +45,7 @@ def main():
     X_train_n, Y_train_n = shuffle_dependent_lists(X_train_n, Y_train_n)
     X_test_n, Y_test_n = shuffle_dependent_lists(X_test_n, Y_test_n)
     
-
+    # train on English data after downsampling
     svm1 = train_svm(X_train_e[:len(X_train_n)], Y_train_e[:len(X_train_n)])
     Y_pred_e = svm1.predict(X_test_e)
     
@@ -52,10 +54,10 @@ def main():
   
     
     
-    print(f'accuracy SVM_en:{accuracy_score(Y_test_e, Y_pred_e):.2f}')
-    print("F1_score SVM_en:",f1_score(Y_test_e, Y_pred_e,average = 'macro'))
-    print(f'accuracy SVM_nl:{accuracy_score(Y_test_n, Y_pred_n):.2f}')
-    print("F1_score SVM_nl:",f1_score(Y_test_n, Y_pred_n,average = 'macro'))
+    print(f'accuracy en: {accuracy_score(Y_test_e, Y_pred_e):.2f}')
+    print("F1_score en:",round(f1_score(Y_test_e, Y_pred_e,average = 'macro'),2))
+    print(f'accuracy nl: {accuracy_score(Y_test_n, Y_pred_n):.2f}')
+    print("F1_score nl:",round(f1_score(Y_test_n, Y_pred_n,average = 'macro'),2))
 
 
   
