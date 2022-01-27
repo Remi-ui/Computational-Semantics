@@ -11,7 +11,7 @@ def read_conll(filename):
         for line in f.readlines():
             if line.startswith(b"# raw sent"):
                 sentence = line[13:]
-            elif not line.startswith(b"#") and line.strip(): 
+            if not line.startswith(b"#") and line.strip(): 
                 tokens = line.strip().split()
                 if tokens[6] == b"[]":
                     features.append(sentence)
