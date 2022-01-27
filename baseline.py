@@ -33,15 +33,6 @@ def read_conll(filename):
     naive_classifier = naive_classifier.fit(X_train, Y_train)
     return naive_classifier
   
-  def all_in_one(X_train_big,Y_train_big,X_train_small,Y_train_small):
-    X_train_big = X_train_big[:len(X_train_small)-1]
-    Y_train_big = Y_train_big[:len(Y_train_small)-1]
-    X_train = X_train_big + X_train_small
-    Y_train = Y_train_big + Y_train_small
-    
-    return X_train, Y_train
-  
-  
   
   def main():
     X_train_e, Y_train_e = read_conll("./Data/en/train.txt")
@@ -53,19 +44,13 @@ def read_conll(filename):
     X_train_n, Y_train_n = shuffle_dependent_lists(X_train_n, Y_train_n)
     X_test_n, Y_test_n = shuffle_dependent_lists(X_test_n, Y_test_n)
     
-    #separately
-    svm1 = train_svm(X_train_e, Y_train_e)
+
+    svm1 = train_svm(X_train_e[:len(X_train_n)-1], Y_train_e[:len(X_train_n)-1])
     Y_pred_e1 = svm1.predict(X_test_e)
     
     svm2 = train_svm(X_train_n, Y_train_n)
     Y_pred_n1 = svm1.predict(X_test_n)
-    
-    
-    #all-in-one
-    X_train,Y_train = all_in_one(X_train_e,Y_train_e,X_train_n,Y_train_n)
-    svm = train_svm(X_train, Y_train)
-    Y_pred_e = svm.predict(X_test_e)
-    Y_pred_n = svm.predict(X_test_n)
+  
     
     
     print(f'accuracy SVM_en:{accuracy_score(Y_test_e, Y_pred_e1):.2f}')
@@ -73,10 +58,6 @@ def read_conll(filename):
     print(f'accuracy SVM_nl:{accuracy_score(Y_test_n, Y_pred_n1):.2f}')
     print("F1_score SVM_nl:",f1_score(Y_test_n, Y_pred_n1,average = 'macro'))
 
-    print(f'accuracy SVM_en_all:{accuracy_score(Y_test_e, Y_pred_e):.2f}')
-    print("F1_score SVM_en_all:",f1_score(Y_test_e, Y_pred_e,average = 'macro'))
-    print(f'accuracy SVM_nl_all:{accuracy_score(Y_test_n, Y_pred_n):.2f}')
-    print("F1_score SVM_nl_all:",f1_score(Y_test_n, Y_pred_n,average = 'macro'))
 
   
   
