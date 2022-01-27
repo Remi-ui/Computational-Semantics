@@ -44,7 +44,7 @@ def main():
     X_test_n, Y_test_n = shuffle_dependent_lists(X_test_n, Y_test_n)
     
 
-    svm1 = train_svm(X_train_e[:len(X_train_n)-1], Y_train_e[:len(X_train_n)-1])
+    svm1 = train_svm(X_train_e[:len(X_train_n)], Y_train_e[:len(X_train_n)])
     Y_pred_e1 = svm1.predict(X_test_e)
     
     svm2 = train_svm(X_train_n, Y_train_n)
