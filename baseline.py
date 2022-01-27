@@ -22,19 +22,19 @@ def read_conll(filename):
                 
     return features,labels
   
-  def shuffle_dependent_lists(l1,l2):
+def shuffle_dependent_lists(l1,l2):
     tmp = list(zip(l1,l2))
     random.Random(123).shuffle(tmp)
     return zip(*tmp)
   
-  def train_naive_bayes(X_train, Y_train):
+def train_naive_bayes(X_train, Y_train):
     vec = TfidfVectorizer()
     naive_classifier = Pipeline([('vec', vec), ('cls', MultinomialNB())])
     naive_classifier = naive_classifier.fit(X_train, Y_train)
     return naive_classifier
   
   
-  def main():
+def main():
     X_train_e, Y_train_e = read_conll("./Data/en/train.txt")
     X_test_e, Y_test_e = read_conll("./Data/en/test.txt")
     X_train_e, Y_train_e = shuffle_dependent_lists(X_train_e, Y_train_e)
@@ -60,4 +60,5 @@ def read_conll(filename):
 
 
   
-  
+if __name__ == "__main__":
+    main()
