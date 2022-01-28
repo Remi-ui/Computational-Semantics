@@ -1,11 +1,8 @@
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score,classification_report,recall_score,precision_score,f1_score
-from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import Counter
 from sklearn.svm import LinearSVC
-from sklearn.ensemble import RandomForestClassifier
 
 import random
 import torch
@@ -74,8 +71,8 @@ def compute_metrics(p):
     f1 = f1_score(y_true=labels, y_pred=pred, average='macro') 
 
     print("----------")
-    print(accuracy)
-    print(f1)
+    print(round(accuracy,2))
+    print(round(f1,2))
     print("----------")
     return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1}
 
@@ -93,10 +90,11 @@ class TaggingDataset(torch.utils.data.Dataset):
         return len(self.labels)
 
 def main():
+    # To read the English files
     X_train, Y_train = read_conll("Data/train.txt")
     X_test, Y_test = read_conll("Data/test.txt")
     
-    # To read the dutch files
+    # To read the Dutch files
     X_train_dutch, Y_train_dutch = read_conll("Data/train_nl.txt")
 
     # Adding them to the existing list with English
@@ -107,11 +105,8 @@ def main():
     X_train_dutch, Y_train_dutch = shuffle_dependent_lists(X_train_dutch, Y_train_dutch)
     X_test, Y_test = shuffle_dependent_lists(X_test, Y_test)
 
-    list_len = len(X_train_dutch) - 1
-    X_train = X_train[:list_len]
-    Y_train = Y_train[:list_len]
-    X_train_dutch = X_train_dutch[:list_len]
-    Y_train_dutch = Y_train_dutch[:list_len]
+    X_train = X_train[:len(X_train_dutch)]
+    Y_train = Y_train[:len(X_train_dutch)]
 
     X_train = X_train + X_train_dutch
     Y_train = Y_train + Y_train_dutch
