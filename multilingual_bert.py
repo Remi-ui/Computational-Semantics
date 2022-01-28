@@ -24,9 +24,14 @@ def read_conll(filename):
     words, labels = [], []
     with open(filename, 'rb') as f:
         for line in f.readlines():
+            if line.startswith(b"# raw sent"):
+                sentence = line[13:-1]
             if not line.startswith(b"#") and line.strip():
                 tokens = line.strip().split()
-                words.append(tokens[0]) #can add some other features
+                if tokens[6] == b'[]':
+                  words.append(tokens[0]+ b" " + sentence)
+                else:
+                  words.append(tokens[0] + b" " + tokens[6] + b" " + sentence) #can add some other features
                 labels.append(tokens[3])
     return words,labels
   
@@ -40,16 +45,16 @@ def bert(train_dataset, test_dataset):
     model = AutoModelForSequenceClassification.from_pretrained("seongju/klue-tc-bert-base-multilingual-cased", num_labels=69, ignore_mismatched_sizes=True)
 
     #training_args = TrainingArguments("test_trainer")
-    batch_size = 64
+    batch_size = 32
     args = TrainingArguments(
               f"training_with_callbacks",
               evaluation_strategy ='steps',
-              eval_steps = 250, # Evaluation and Save happens every 500 steps
+              eval_steps = 100, # Evaluation and Save happens every 500 steps
               save_total_limit = 5, # Only last 3 models are saved. Older ones are deleted.
               learning_rate=2e-5,
               per_device_train_batch_size=batch_size,
               per_device_eval_batch_size=batch_size,
-              num_train_epochs=5, # Number of epochs
+              num_train_epochs=8, # Number of epochs
               push_to_hub=False,
               metric_for_best_model = 'f1',
               load_best_model_at_end=True)
@@ -57,6 +62,7 @@ def bert(train_dataset, test_dataset):
         model=model, args=args, train_dataset=train_dataset, eval_dataset=test_dataset, callbacks = [EarlyStoppingCallback(early_stopping_patience=3)], compute_metrics=compute_metrics
     )
     trainer.train()
+    trainer.save_model("Trained model")
     trainer.evaluate()
 
 def compute_metrics(p):    
@@ -91,14 +97,24 @@ def main():
     X_test, Y_test = read_conll("Data/test.txt")
     
     # To read the dutch files
-    #X_train_dutch, Y_train_dutch = read_conll("Data/train_nl.txt")
+    X_train_dutch, Y_train_dutch = read_conll("Data/train_nl.txt")
 
     # Adding them to the existing list with English
     #X_train = X_train + X_train_dutch
     #Y_train = Y_train + Y_train_dutch
     
     X_train, Y_train = shuffle_dependent_lists(X_train, Y_train)
+    X_train_dutch, Y_train_dutch = shuffle_dependent_lists(X_train_dutch, Y_train_dutch)
     X_test, Y_test = shuffle_dependent_lists(X_test, Y_test)
+
+    list_len = len(X_train_dutch) - 1
+    X_train = X_train[:list_len]
+    Y_train = Y_train[:list_len]
+    X_train_dutch = X_train_dutch[:list_len]
+    Y_train_dutch = Y_train_dutch[:list_len]
+
+    X_train = X_train + X_train_dutch
+    Y_train = Y_train + Y_train_dutch
 
     X_train = [i.decode("utf-8")  for i in X_train]
     X_test = [i.decode("utf-8") for i in X_test]
